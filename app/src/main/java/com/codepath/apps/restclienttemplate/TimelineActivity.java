@@ -1,7 +1,9 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -68,5 +70,16 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.i(TAG, "onFailure", throwable);
             }
         });
+    }
+
+    public void onLogoutButton(View view) {
+        // Clear login info
+        TwitterApp.getRestClient(this).clearAccessToken();
+
+        // Return back to login screen (could also do this with 'finish()')
+        Intent i = new Intent(this, LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Ensures the Back button won't work
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
+        startActivity(i);
     }
 }
