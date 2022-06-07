@@ -6,7 +6,13 @@
     <string name="logout_label">Log out</string>
     <string name="intent_scheme">oauth</string>
     <string name="intent_host">cprest</string>
+
     <string name="screen_name">ScreenName</string>
     <string name="tweet_example">I love dogs so much.</string>
+
+    <string name="compose">Compose</string>
+
+    <string name="compose_prompt">What\'s happening?</string>
+    <string name="tweet">Tweet</string>
 
 </resources>
