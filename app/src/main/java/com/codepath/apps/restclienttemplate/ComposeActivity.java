@@ -6,12 +6,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.parceler.Parcels;
@@ -44,22 +45,17 @@ public class ComposeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String tweetContent = etCompose.getText().toString();
 
-                //TODO: CHRISTY -> look into 'working with edittext' resource
-
                 if (tweetContent.isEmpty()) {
-
-                    //TODO: replace toasts --> put string or android snackbar
-                    Toast.makeText(ComposeActivity.this,
-                            "Sorry, your tweet cannot be empty", Toast.LENGTH_LONG).show();
+                    Snackbar.make(tweetButton, R.string.compose_empty, Snackbar.LENGTH_LONG)
+                            .show();
                     return;
                 }
                 if (tweetContent.length() > MAX_TWEET_LENGTH) {
-                    Toast.makeText(ComposeActivity.this,
-                            "Sorry, your tweet is too long", Toast.LENGTH_LONG).show();
+                    Snackbar.make(tweetButton, R.string.compose_tooLong, Snackbar.LENGTH_LONG)
+                            .show();
                     return;
                 }
-                Toast.makeText(ComposeActivity.this,
-                        tweetContent, Toast.LENGTH_LONG).show();
+
                 // Make API call to Twitter to publish the tweet
                 client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
                     @Override

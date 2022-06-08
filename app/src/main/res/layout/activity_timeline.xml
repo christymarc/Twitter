@@ -21,7 +21,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp" />
-        
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <Button
@@ -31,5 +31,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:onClick="onLogoutButton"
-        android:text="@string/logout_label" />
+        android:text="@string/logout_label"
+        app:layout_anchor="@+id/swipeContainer"
+        app:layout_anchorGravity="end|bottom" />
 </RelativeLayout>

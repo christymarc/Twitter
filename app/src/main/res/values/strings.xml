@@ -15,4 +15,7 @@
     <string name="compose_prompt">What\'s happening?</string>
     <string name="tweet">Tweet</string>
 
+    <string name="compose_empty">Sorry, your tweet cannot be empty</string>
+    <string name="compose_tooLong">Sorry, your tweet is too long</string>
+
 </resources>
