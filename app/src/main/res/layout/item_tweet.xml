@@ -17,13 +17,24 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tvScreenName"
+        android:id="@+id/tvDot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="5dp"
         android:layout_marginTop="0dp"
-        android:layout_toEndOf="@+id/ivProfileImage"
+        android:layout_toEndOf="@+id/tvScreenName"
+        android:text="•"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvScreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:layout_toEndOf="@+id/tvName"
         tools:text="@string/screen_name" />
 
     <TextView
@@ -47,5 +58,39 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"
         android:layout_toEndOf="@+id/ivProfileImage"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <View
+        android:id="@+id/vBorder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/ivMedia"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
+        android:background="#9F9B9B" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        tools:text="@string/name" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvScreenName"
+        android:layout_alignBottom="@+id/tvScreenName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/tvDot"
+        tools:text="@string/time_stamp" />
+
 </RelativeLayout>

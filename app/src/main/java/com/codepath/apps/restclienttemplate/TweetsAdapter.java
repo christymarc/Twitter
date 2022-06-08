@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
@@ -54,6 +55,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
+        TextView tvName;
+        TextView tvTime;
         ImageView ivMedia;
 
         public ViewHolder (@NonNull View itemView) {
@@ -61,14 +64,19 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvTime = itemView.findViewById(R.id.tvTime);
             ivMedia = itemView.findViewById(R.id.ivMedia);
         }
 
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
+            tvName.setText(tweet.user.name);
+            tvTime.setText(tweet.createdAt);
             Glide.with(context)
                     .load(tweet.user.profileImageUrl)
+                    .transform(new CircleCrop())
                     .into(ivProfileImage);
             if (tweet.display_media != null) {
                 Log.i("TweetsAdapter: ", "display media exists");

@@ -18,4 +18,7 @@
     <string name="compose_empty">Sorry, your tweet cannot be empty</string>
     <string name="compose_tooLong">Sorry, your tweet is too long</string>
 
+    <string name="time_stamp">2m</string>
+    <string name="name">Name</string>
+
 </resources>
