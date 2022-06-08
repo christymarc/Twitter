@@ -1,5 +1,7 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +16,8 @@ public class Tweet {
     public String body;
     public String createdAt;
     public User user;
+    public Entities entities;
+    public Media display_media = null;
 
     public Tweet() {}
 
@@ -22,6 +26,12 @@ public class Tweet {
         tweet.body = jsonObject.getString("text");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+        tweet.entities = Entities.fromJson(jsonObject.getJSONObject("entities"));
+        Log.i("TweetModel:", "Entities: " + tweet.entities.toString());
+        // Using entities to get first piece of media (image)
+        if (tweet.entities.media_list != null) {
+            tweet.display_media = tweet.entities.media_list.get(0);
+        }
         return tweet;
     }
 
