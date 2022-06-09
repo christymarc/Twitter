@@ -26,13 +26,17 @@ public class Tweet {
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
-        tweet.body = jsonObject.getString("text");
-        tweet.createdAt = tweet.getRelativeTimeAgo
-                (jsonObject.getString("created_at"));
-        System.out.println(tweet.createdAt);
+
+        if(jsonObject.has("full_text")) {
+            tweet.body = jsonObject.getString("full_text");
+        } else {
+            tweet.body = jsonObject.getString("text");
+        }
+
+        tweet.createdAt = tweet.getRelativeTimeAgo(jsonObject.getString("created_at"));
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.entities = Entities.fromJson(jsonObject.getJSONObject("entities"));
-        Log.i("TweetModel:", "Entities: " + tweet.entities.toString());
+
         // Using entities to get first piece of media (image)
         if (tweet.entities.media_list != null) {
             tweet.display_media = tweet.entities.media_list.get(0);
