@@ -82,7 +82,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 Log.i("TweetsAdapter: ", "display media exists");
                 Glide.with(context)
                         .load(tweet.display_media.media_url)
-                        .override(850, 500)
+                        .override(500, 300)
                         .centerCrop()
                         .transform(new RoundedCorners(30))
                         .into(ivMedia);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Simple Tweet</string>
+    <string name="app_name">Twitter</string>
     <string name="login_label">Log in</string>
     <string name="logout_label">Log out</string>
     <string name="intent_scheme">oauth</string>
@@ -20,5 +20,6 @@
 
     <string name="time_stamp">2m</string>
     <string name="name">Name</string>
+    <string name="Icon">icon</string>
 
 </resources>
