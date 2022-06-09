@@ -21,6 +21,7 @@ public class Tweet {
     public User user;
     public Entities entities;
     public Media display_media = null;
+    public long id;
 
     public Tweet() {}
 
@@ -36,6 +37,7 @@ public class Tweet {
         tweet.createdAt = tweet.getRelativeTimeAgo(jsonObject.getString("created_at"));
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.entities = Entities.fromJson(jsonObject.getJSONObject("entities"));
+        tweet.id = jsonObject.getLong("id");
 
         // Using entities to get first piece of media (image)
         if (tweet.entities.media_list != null) {

@@ -33,6 +33,9 @@ public class TimelineActivity extends AppCompatActivity {
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
 
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
+
     TwitterClient client;
     RecyclerView rvTweets;
     List<Tweet> tweets;
@@ -47,7 +50,6 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Find the recycler view
         rvTweets = findViewById(R.id.rvTweets);
-        //composeFab = findViewById(R.id.composeFab);
 
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
@@ -77,6 +79,43 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweets.setAdapter(adapter);
 
         populateHomeTimeline();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(linearLayoutManager);
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvTweets.addOnScrollListener(scrollListener);
+    }
+
+    // Sends out a network request and appends new data items to your adapter
+    private void loadNextDataFromApi(int page) {
+        int current_position = adapter.getItemCount();
+        client.getTweets(tweets.get(tweets.size()-1).id, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                // Add new items to the adapter
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    adapter.notifyItemRangeInserted(current_position, tweets.size() - 1);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.i("TimelineActivity: ", "Endless Scrolling is working");
+            }
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.i("TimelineActivity: ", "Endless Scroll error loading");
+            }
+        });
     }
 
     public void fetchTimelineAsync(int page) {

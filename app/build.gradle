@@ -39,6 +39,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -52,6 +55,9 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui:1.0.0'
     // Room for simple persistence with an ORM
     def room_version = "2.4.0-alpha03"
     implementation "androidx.room:room-runtime:$room_version"
