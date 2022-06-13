@@ -3,18 +3,16 @@ package com.codepath.apps.restclienttemplate;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +25,7 @@ import javax.annotation.Nullable;
 
 import okhttp3.Headers;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements ComposeDialogFragment.ComposeDialogListener {
 
     private SwipeRefreshLayout swipeContainer;
     public static final String TAG = "TimelineActivity";
@@ -97,25 +95,30 @@ public class TimelineActivity extends AppCompatActivity {
 
     // Sends out a network request and appends new data items to your adapter
     private void loadNextDataFromApi(int page) {
-        int current_position = adapter.getItemCount();
-        client.getTweets(tweets.get(tweets.size()-1).id, new JsonHttpResponseHandler() {
+        final int CURRENT_POSITION = adapter.getItemCount();
+        client.getTweets(getLastTweetID(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 // Add new items to the adapter
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
-                    adapter.notifyItemRangeInserted(current_position, tweets.size() - 1);
+                    adapter.notifyItemRangeInserted(CURRENT_POSITION, tweets.size() - 1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Log.i("TimelineActivity: ", "Endless Scrolling is working");
+                Log.i(TAG, "Endless Scrolling is working");
             }
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.i("TimelineActivity: ", "Endless Scroll error loading");
+                Log.i(TAG, "Endless Scroll error loading");
             }
         });
+    }
+
+    public Long getLastTweetID() {
+        Tweet last_tweet = tweets.get(tweets.size()-1);
+        return last_tweet.id;
     }
 
     public void fetchTimelineAsync(int page) {
@@ -146,6 +149,9 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
+// Commented out because now using floating button & fragment dialogue
+// -> this was how you create a menu with a button and have that button start a new activity
+// + return the data from the activity to this main activity
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; adds items to actionbar if it's present
@@ -155,7 +161,7 @@ public class TimelineActivity extends AppCompatActivity {
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.) {
+//        if (item.getItemId() == R.id.compose) {
 //            // Compose icon selected
 //            // Navigate to compose activity
 //            Intent intent = new Intent(this, ComposeActivity.class);
@@ -165,20 +171,20 @@ public class TimelineActivity extends AppCompatActivity {
 //        return super.onOptionsItemSelected(item);
 //    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            // Get data from the intent (tweet)
-            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
-            // Update the RecyclerView with this new tweet
-            // Modify data source of tweets
-            tweets.add(0, tweet);
-            // Update the adapter
-            adapter.notifyItemInserted(0);
-            rvTweets.smoothScrollToPosition(0);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+//            // Get data from the intent (tweet)
+//            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+//            // Update the RecyclerView with this new tweet
+//            // Modify data source of tweets
+//            tweets.add(0, tweet);
+//            // Update the adapter
+//            adapter.notifyItemInserted(0);
+//            rvTweets.smoothScrollToPosition(0);
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     private void populateHomeTimeline() {
         client.getHomeTimeline(new JsonHttpResponseHandler() {
@@ -214,7 +220,18 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     public void onComposeButton(View view) {
-        Intent intent = new Intent(this, ComposeActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
+        FragmentManager fm = getSupportFragmentManager();
+        ComposeDialogFragment composeDialogFragment = ComposeDialogFragment.newInstance();
+        composeDialogFragment.show(fm, "compose_fragment");
+    }
+
+    @Override
+    public void onFinishComposeDialog(Tweet tweet) {
+        // Update the RecyclerView with this new tweet
+        // Modify data source of tweets
+        tweets.add(0, tweet);
+        // Update the adapter
+        adapter.notifyItemInserted(0);
+        rvTweets.smoothScrollToPosition(0);
     }
 }

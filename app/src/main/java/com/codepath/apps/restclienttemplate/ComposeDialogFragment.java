@@ -2,13 +2,14 @@ package com.codepath.apps.restclienttemplate;
 
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.fragment.app.DialogFragment;
+
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
@@ -17,9 +18,12 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
+import javax.annotation.Nullable;
+
 import okhttp3.Headers;
 
-public class ComposeActivity extends AppCompatActivity {
+
+public class ComposeDialogFragment extends DialogFragment {
 
     public static final String TAG = "ComposeActivity";
     public static final int MAX_TWEET_LENGTH = 280;
@@ -29,15 +33,42 @@ public class ComposeActivity extends AppCompatActivity {
 
     TwitterClient client;
 
+    public ComposeDialogFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     */
+    public static ComposeDialogFragment newInstance() {
+        ComposeDialogFragment fragment = new ComposeDialogFragment();
+        return fragment;
+    }
+
+    /**
+     * Defines the compose listener interface with a method passing back data result.
+     */
+    public interface ComposeDialogListener {
+        void onFinishComposeDialog(Tweet tweet);
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_compose_dialogue, container);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compose);
 
-        etCompose = findViewById(R.id.etCompose);
-        tweetButton = findViewById(R.id.tweetButton);
+        etCompose = view.findViewById(R.id.etCompose);
+        tweetButton = view.findViewById(R.id.tweetButton);
 
-        client = TwitterApp.getRestClient(this);
+        client = TwitterApp.getRestClient(this.getContext());
 
         // Set click listener on the button
         tweetButton.setOnClickListener(new View.OnClickListener() {
@@ -64,12 +95,11 @@ public class ComposeActivity extends AppCompatActivity {
                         try {
                             Tweet tweet = Tweet.fromJson(json.jsonObject);
                             Log.i(TAG, "Published tweet says: " + tweet.body);
-                            Intent intent = new Intent();
-                            intent.putExtra("tweet", Parcels.wrap(tweet));
-                            // Set result code and bundle data for response
-                            setResult(RESULT_OK, intent);
-                            // Closes the activity, passes data to parent
-                            finish();
+                            ComposeDialogListener listener = (ComposeDialogListener) getActivity();
+                            if (listener != null) {
+                                listener.onFinishComposeDialog(tweet);
+                            }
+                            dismiss();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
